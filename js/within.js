@@ -32,9 +32,8 @@ var enterWithin = (function() {
         current.progress = (scroll - (current.layer * distance)) / distance;
         current.overallProgress = (scroll / (distance * layers));
 
-        setZPosition(nodes.scene, scroll);
-
         updateActive();
+        setZPosition(nodes.scene, scroll);
     }
 
     function updateActive() {
@@ -46,9 +45,6 @@ var enterWithin = (function() {
 
         setOpacity(current.progress, currentLayer);
         reduceOpacity(current.progress, lastLayer);
-        //var progress = '';
-        //console.log(current.progress);
-        /// jumps forward at 1.5
 
         if (position !== current.menu) {
 
@@ -67,11 +63,24 @@ var enterWithin = (function() {
     }
 
     function setZPosition(element, z) {
+        console.log(element);
         element.css({
             '-webkit-transform': 'translate3d(0, 0px, ' + z + 'px)',
             '-moz-transform': 'translate3d(0, 0, ' + z + 'px)',
             'transform': 'translate3d(0, 0, ' + z + 'px)'
         });
+
+        var activeNow = $('.active-now');
+            layerDepth = activeNow.data('depth'),
+            realmGreater = z > layerDepth,
+            currentLayerDepthActive = -z ;
+
+        activeNow.css({
+            '-webkit-transform': 'translate3d(0, 0px, ' + currentLayerDepthActive + 'px)',
+            '-moz-transform': 'translate3d(0, 0, ' + currentLayerDepthActive + 'px)',
+            'transform': 'translate3d(0, 0, ' + currentLayerDepthActive + 'px)'
+        });
+
     }
 
     function scrollToLayer(target) {
@@ -84,14 +93,12 @@ var enterWithin = (function() {
         layers = nodes.layers.length;
 
         depth = (distance * (layers -1)) + nodes.window.height();
-        //console.log(depth);
 
         nodes.depth.css('height', depth + 'px');
     }
 
     function hideImages() {
         $('.layer').removeClass('active-now');
-        //$('img').addClass('hidden');
         $('img').each(function(){
             var element = $(this);
             element.attr('src', "img/test.gif").addClass('hidden');
@@ -128,8 +135,6 @@ var enterWithin = (function() {
             doubleProgress = progress * 2,
             fadeInSegment = progress <= .5;
 
-        console.log(layer);
-
         if (testOpacityContainer.length == 1 && fadeInSegment && video.length > 0) {
             playVideo(video);
             testOpacityContainer.css('opacity', doubleProgress);
@@ -141,7 +146,6 @@ var enterWithin = (function() {
 
     function playVideo(vid) {
         var playing = vid.is('playing');
-        console.log(vid);
         if (!playing && vid.length > 0) {
             vid.addClass('playing');
             vid.get(0).play();
